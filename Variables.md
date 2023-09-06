@@ -30,3 +30,17 @@ num = 2;
 console.log(num);
 # this returns 0 first, and then 2, since the value has changed later on
 ```
+We can also create a variable with *const* , **BUT** the difference is that you can not assign a new value later on.
+It is a **Constant Variable**. 
+Also, we can not write it in the same way:
+```
+let num;
+num = 2;
+console.log(num);
+# Will return 2, otherwise:
+const test;
+test = 2;
+console.log(test);
+# This is a typical common SyntaxError:
+const test = 2; # We need to define it directly.
+```
