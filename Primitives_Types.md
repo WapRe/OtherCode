@@ -1,5 +1,5 @@
 There are different kind of values that can be assigned to a variable:
-<h3>String</h3>
+<h3>String / Number </h3>
 
 By assigning a number to a variable, the variable automatically has the type Number.
 We can use the typeof operator to find out the type of a value or variable. 
@@ -24,8 +24,6 @@ text = `bye`;
 console.log(text);
 ```
 All those ways are correct, and string type. 
-
-<h3>Number</h3>
 
 <h3>Boolean</h3>
 
@@ -56,6 +54,17 @@ An empty string ('')
 ```
 We can use boolean values to troubleshoot, or other usefull functions. 
 
-<h3>undefined</h3>
+<h3>undefined / null</h3>
 
-<h3>null</h3>
+In fact, a non initialized variable is an undefined variable. Just to mention. 
+**But** we can also define a varible as undefined (not very common):
+```
+let varia = undefined;
+```
+Same as null, it is possible to define a variable as null:
+```
+let variab = null;
+```
+We use null in situations we want to clear the value of a variable. 
+For exemple, you select a colour as red and the colour variable is now red, you unselect the colour, it goes back to null. 
+
