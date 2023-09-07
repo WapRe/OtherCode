@@ -30,6 +30,11 @@ num = 2;
 console.log(num);
 # this returns 0 first, and then 2, since the value has changed later on
 ```
+Best practice is to define each variable in different lines, but we can declare different variables at the same time to: 
+```
+let firstName = 'Tom', lastName = 'Smith';
+```
+
 We can also create a variable with *const* , **BUT** the difference is that you can not assign a new value later on.
 It is a **Constant Variable**. 
 Also, we can not write it in the same way:
@@ -44,3 +49,11 @@ console.log(test);
 # This is a typical common SyntaxError:
 const test = 2; # We need to define it directly.
 ```
+
+There are few **rules** for variables:
+-  Cannot be a reserved keyword (let, if, or, etc...). If we try to declare a variable named as a reserved keyword, it will not work.
+-  Good practice coding, use meaningful names so anybody can know what it is stored in this variable.
+-  Variables can no start with a number.
+-  Cannot contain a space or hypen (-)
+-  Good practice for writting variables is in cammel notation (1rst letter is lowercase, next word in upper case like 'firstName'
+-  JS is case sensitive with variables, 'firstName' and 'Firstname' are different variables if declared. 
