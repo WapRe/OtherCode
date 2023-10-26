@@ -119,18 +119,30 @@ function show_progress {
   echo -ne "] ${perc}%\r"
 }
 
+
 # Port scanning in a loop
 count=0
+
+# Initialize the buffer for open port messages
+open_ports_buffer=""
+
 for port in $(seq $START_PORT $END_PORT); do
   (
-    # Try to connect to the port and, if successful, display that it's open and save it to the file
+    # Try to connect to the port and, if successful, add to the buffer
     if timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null; then 
-      echo -e "\e[2A\e[K${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
-      echo -e "\e[K"    # Clear the line for the next progress bar
+      open_ports_buffer="${open_ports_buffer}${GREEN}[+] $port - OPEN${NC}\n"
+      echo -e "${open_ports_buffer}" | tee -a $OUTPUT_FILE
+      open_ports_buffer=""
     fi
   ) &
   ((count++))
 
+  # If there are open ports in the buffer, print them
+  if [ ! -z "$open_ports_buffer" ]; then
+    echo -e "${open_ports_buffer}"
+    open_ports_buffer=""
+  fi
+  
   # Display progress bar
   show_progress $END_PORT $port
   
