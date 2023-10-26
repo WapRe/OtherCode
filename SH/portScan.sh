@@ -124,7 +124,10 @@ count=0
 for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, display that it's open and save it to the file
-    timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null && echo -e "${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
+    if timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null; then 
+      echo -e "\e[1A\e[K${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
+      echo    # Print a new line for the next progress bar
+    fi
   ) &
   ((count++))
 
@@ -139,8 +142,7 @@ done
 wait
 
 # Upon scan completion, display the location of the results file
-echo -e "${GREEN}Results saved at:${YELLOW} ${OUTPUT_FILE}${NC}"
-echo
+echo -e "\n${GREEN}Results saved at:${YELLOW} ${OUTPUT_FILE}${NC}\n"
 
 # Check if xclip is installed
 if command -v xclip > /dev/null; then
