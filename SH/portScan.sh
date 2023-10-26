@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Color definitions
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
 # Function to handle the Ctrl+C interruption
 function ctrl_c(){
   echo -e "\n\n${RED}[!] Exiting...${NC}\n"
@@ -34,7 +41,7 @@ function validate_ip_or_hostname() {
   if [[ ! $target =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     # If it's not an IP, we can do a quick DNS resolution to verify if it's a valid hostname
     if ! host $target &> /dev/null; then
-      echo "[!] Invalid IP address or hostname: $target"
+      echo "${RED}[!] Invalid IP address or hostname: $target ${NC}"
       exit 1
     fi
   fi
@@ -45,7 +52,7 @@ function validate_port_range() {
   local port=$1
 
   if [[ ! $port =~ ^[0-9]+$ ]] || ((port < 1 || port > 65535)); then
-    echo "[!] Invalid port range. Must be between 1 and 65535."
+    echo "${RED}[!] Invalid port range. Must be between 1 and 65535. ${NC}"
     exit 1
   fi
 }
@@ -69,18 +76,17 @@ while getopts "t:s:e:p:w:h" opt; do
   esac
 done
 
+# Validate that END_PORT is not smaller than START_PORT
+if (( END_PORT < START_PORT )); then
+  echo -e "${RED}[!] Error: The ending port (END_PORT) cannot be smaller than the starting port (START_PORT).${NC}"
+  exit 1
+fi
+
 # Validation to ensure the target (TARGET) was specified
 if [ -z "$TARGET" ]; then
   echo "[!] You must specify a target with -t."
   usage
 fi
-
-# Color definitions
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
 
 # Create temporary directory to save the result
 TMP_DIR=$(mktemp -d -t portscan-XXXXXX)
@@ -115,7 +121,6 @@ function show_progress {
 
 # Port scanning in a loop
 count=0
-echo
 for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, display that it's open and save it to the file
