@@ -84,7 +84,7 @@ fi
 
 # Validation to ensure the target (TARGET) was specified
 if [ -z "$TARGET" ]; then
-  echo "[!] You must specify a target with -t."
+  echo -e "${RED}[!] You must specify a target with -t.${NC}"
   usage
 fi
 
@@ -124,7 +124,7 @@ count=0
 for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, display that it's open and save it to the file
-    timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null && echo -e "${RED}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
+    timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null && echo -e "${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
   ) &
   ((count++))
 
