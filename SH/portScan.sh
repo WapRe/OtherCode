@@ -125,8 +125,8 @@ for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, display that it's open and save it to the file
     if timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null; then 
-      echo -e "\e[1A\e[K${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
-      echo    # Print a new line for the next progress bar
+      echo -e "\e[2A\e[K${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
+      echo -e "\e[K"    # Clear the line for the next progress bar
     fi
   ) &
   ((count++))
