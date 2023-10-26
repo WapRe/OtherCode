@@ -129,7 +129,6 @@ for port in $(seq $START_PORT $END_PORT); do
   ((count++))
 
   # Display progress bar
-  echo
   show_progress $END_PORT $port
   
   # Wait after a certain number of parallel scans
