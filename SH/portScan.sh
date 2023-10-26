@@ -41,7 +41,7 @@ function validate_ip_or_hostname() {
   if [[ ! $target =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     # If it's not an IP, we can do a quick DNS resolution to verify if it's a valid hostname
     if ! host $target &> /dev/null; then
-      echo "${RED}[!] Invalid IP address or hostname: $target ${NC}"
+      echo -e "${RED}[!] Invalid IP address or hostname: $target ${NC}"
       exit 1
     fi
   fi
@@ -52,7 +52,7 @@ function validate_port_range() {
   local port=$1
 
   if [[ ! $port =~ ^[0-9]+$ ]] || ((port < 1 || port > 65535)); then
-    echo "${RED}[!] Invalid port range. Must be between 1 and 65535. ${NC}"
+    echo -e "${RED}[!] Invalid port range. Must be between 1 and 65535. ${NC}"
     exit 1
   fi
 }
