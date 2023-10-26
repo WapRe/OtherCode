@@ -2,7 +2,8 @@
 
 # Function to handle the Ctrl+C interruption
 function ctrl_c(){
-  echo -e "\n\n[!] Exiting...\n"
+  echo -e "\n\n${RED}[!] Exiting...${NC}\n"
+  stty echo
   tput cnorm
   exit 1
 }
@@ -91,6 +92,9 @@ trap ctrl_c INT
 # Hide the cursor for aesthetic improvement during the scan
 tput civis
 
+# Deactivate the input
+stty -echo
+
 # Function to display progress bar
 function show_progress {
   local total=$1
@@ -114,7 +118,7 @@ count=0
 for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, display that it's open and save it to the file
-    timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null && echo -e "${GREEN}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
+    timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null && echo -e "${RED}[+] $port - OPEN${NC}" | tee -a $OUTPUT_FILE
   ) &
   ((count++))
 
@@ -129,7 +133,10 @@ done
 wait
 
 # Upon scan completion, display the location of the results file
-echo -e "${BLUE}Results saved at: ${OUTPUT_FILE}${NC}"
+echo -e "${GREEN}Results saved at:${YELLOW} ${OUTPUT_FILE}${NC}"
+
+# Re-activate the input
+stty echo
 
 # Restore the cursor
 tput cnorm
