@@ -90,7 +90,7 @@ fi
 
 # Create temporary directory to save the result
 TMP_DIR=$(mktemp -d -t portscan-XXXXXX)
-OUTPUT_FILE="${TMP_DIR}/scan_result.txt"
+OUTPUT_FILE="${TMP_DIR}/open_ports_buffer.txt"
 
 # Set the handler for Ctrl+C
 trap ctrl_c INT
@@ -121,14 +121,11 @@ function show_progress {
 
 # Port scanning in a loop
 count=0
-open_ports=()
-
 for port in $(seq $START_PORT $END_PORT); do
   (
-    # Try to connect to the port and, if successful, add to the buffer
+    # Try to connect to the port and, if successful, save it directly to the output file
     if timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null; then 
-      open_ports+=($port)
-      echo "$port" >> "$OUTPUT_FILE"  # Save directly to the file
+      echo "$port - OPEN" >> "$OUTPUT_FILE" 
     fi
   ) &
   ((count++))
@@ -144,9 +141,9 @@ done
 wait
 
 # List down the open ports below the progress bar
-for port in "${open_ports[@]}"; do
-  echo -e "${GREEN}[+] $port - OPEN${NC}"
-done
+while read -r line; do
+  echo -e "${GREEN}[+] $line${NC}"
+done < "$OUTPUT_FILE"
 
 
 # Upon scan completion, display the location of the results file
@@ -166,3 +163,4 @@ stty echo
 
 # Restore the cursor
 tput cnorm
+
