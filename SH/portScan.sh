@@ -123,30 +123,18 @@ function show_progress {
 count=0
 open_ports=()
 
-# Initialize the progress bar at the top
-show_progress $END_PORT 0
-
 for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, add to the buffer
     if timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null; then 
       open_ports+=($port)
-      
-      # Clear lines equivalent to the number of open ports found so far
-      for i in "${open_ports[@]}"; do
-        echo -ne "\033[1A\033[2K"
-      done
-      
-      # Print the open ports
-      for i in "${open_ports[@]}"; do
-        echo -e "${GREEN}[+] $i - OPEN${NC}"
-      done
-
-      # Redraw the progress bar
-      show_progress $END_PORT $port
+      echo "$port" >> "$OUTPUT_FILE"  # Save directly to the file
     fi
   ) &
   ((count++))
+
+  # Update the progress bar
+  show_progress $END_PORT $port
 
   # Wait after a certain number of parallel scans
   if (( count % PARALLEL == 0 )); then
@@ -154,6 +142,12 @@ for port in $(seq $START_PORT $END_PORT); do
   fi
 done
 wait
+
+# List down the open ports below the progress bar
+for port in "${open_ports[@]}"; do
+  echo -e "${GREEN}[+] $port - OPEN${NC}"
+done
+
 
 # Upon scan completion, display the location of the results file
 echo -e "\n${GREEN}Results saved at:${YELLOW} ${OUTPUT_FILE}${NC}\n"
