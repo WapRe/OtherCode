@@ -142,7 +142,7 @@ wait
 
 # List down the open ports below the progress bar
 while read -r line; do
-  echo -e "${GREEN}[+] $line${NC}"
+  echo -e "\n\n${GREEN}[+] $line${NC}"
 done < "$OUTPUT_FILE"
 
 
@@ -153,9 +153,9 @@ echo -e "\n${GREEN}Results saved at:${YELLOW} ${OUTPUT_FILE}${NC}\n"
 if command -v xclip > /dev/null; then
     # Copy the path to the clipboard and display a message about it
     echo -n "${OUTPUT_FILE}" | xclip -selection clipboard
-    echo -e "${GREEN}The file path has also been copied to the clipboard.${NC}"
+    echo -e "${GREEN}The file path has also been copied to the clipboard.${NC}\n"
 else
-    echo -e "${RED}Note: 'xclip' is not installed, so the file path couldn't be copied to the clipboard.${NC}"
+    echo -e "${RED}Note: 'xclip' is not installed, so the file path couldn't be copied to the clipboard.${NC}\n"
 fi
 
 # Re-activate the input
@@ -163,4 +163,3 @@ stty echo
 
 # Restore the cursor
 tput cnorm
-
