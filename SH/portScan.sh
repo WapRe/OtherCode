@@ -115,6 +115,7 @@ function show_progress {
 
 # Port scanning in a loop
 count=0
+echo
 for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, display that it's open and save it to the file
@@ -123,6 +124,7 @@ for port in $(seq $START_PORT $END_PORT); do
   ((count++))
 
   # Display progress bar
+  echo
   show_progress $END_PORT $port
   
   # Wait after a certain number of parallel scans
@@ -134,6 +136,16 @@ wait
 
 # Upon scan completion, display the location of the results file
 echo -e "${GREEN}Results saved at:${YELLOW} ${OUTPUT_FILE}${NC}"
+echo
+
+# Check if xclip is installed
+if command -v xclip > /dev/null; then
+    # Copy the path to the clipboard and display a message about it
+    echo -n "${OUTPUT_FILE}" | xclip -selection clipboard
+    echo -e "${GREEN}The file path has also been copied to the clipboard.${NC}"
+else
+    echo -e "${RED}Note: 'xclip' is not installed, so the file path couldn't be copied to the clipboard.${NC}"
+fi
 
 # Re-activate the input
 stty echo
