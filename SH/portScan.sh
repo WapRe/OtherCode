@@ -119,7 +119,6 @@ function show_progress {
   echo -ne "] ${perc}%\r"
 }
 
-
 # Port scanning in a loop
 count=0
 
@@ -130,21 +129,21 @@ for port in $(seq $START_PORT $END_PORT); do
   (
     # Try to connect to the port and, if successful, add to the buffer
     if timeout $TIMEOUT bash -c "echo > /dev/tcp/$TARGET/$port" 2>/dev/null; then 
-      open_ports_buffer="${open_ports_buffer}${GREEN}[+] $port - OPEN${NC}\n"
-      echo -e "${open_ports_buffer}" | tee -a $OUTPUT_FILE
+      open_ports_buffer="${open_ports_buffer}${GREEN}[+] $port - OPEN${NC}"
+      echo -n -e "${open_ports_buffer}" | tee -a $OUTPUT_FILE
       open_ports_buffer=""
     fi
   ) &
   ((count++))
 
+  # Display progress bar
+  show_progress $END_PORT $port
+  
   # If there are open ports in the buffer, print them
   if [ ! -z "$open_ports_buffer" ]; then
     echo -e "${open_ports_buffer}"
     open_ports_buffer=""
   fi
-  
-  # Display progress bar
-  show_progress $END_PORT $port
   
   # Wait after a certain number of parallel scans
   if (( count % PARALLEL == 0 )); then
